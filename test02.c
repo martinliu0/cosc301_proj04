@@ -95,17 +95,22 @@ int main(int argc, char **argv)
     ta_create(killerthr, (void *)i);
 
     for (i = 0; i < nrw; i++) {
+	printf("I am making threads!");
         ta_create(reader, (void *)i);
         ta_create(writer, (void *)i);
     }
 
     int rv = ta_waitall();
     assert(rv == 0);
-
+    printf("i am here A");
     ta_sem_destroy(&readersem);
+    printf("i am here B");
     ta_sem_destroy(&writersem);
+    printf("i am here C");
     ta_lock_destroy(&rmutex);
+    printf("i am here D");
     ta_lock_destroy(&wmutex);
+    printf("i am here E");
 
     free(data);
 

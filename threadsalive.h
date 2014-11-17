@@ -4,17 +4,20 @@
 
 #ifndef __THREADSALIVE_H__
 #define __THREADSALIVE_H__
-
+#include "linkedlist.h"
+#include <ucontext.h>
+#include <pthread.h>
 /* ***************************
         type definitions
    *************************** */
 
 typedef struct {
-
+	int count;
+	Node *queue;
 } tasem_t;
 
 typedef struct {
-
+	tasem_t *semaphore;
 } talock_t;
 
 typedef struct {

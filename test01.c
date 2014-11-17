@@ -3,9 +3,11 @@
 
 void thread1(void *arg)
 {
+    //printf("ENTERING THREAD 1\n");
     int *i = (int *)arg;
     *i += 7;
     fprintf(stderr, "begin t1: %d\n", *i);
+    //printf("YIELDING THREAD 1\n");
     ta_yield();
     *i += 7;
     fprintf(stderr, "end t1: %d\n", *i);
@@ -16,6 +18,7 @@ void thread2(void *arg)
     int *i = (int *)arg;
     *i -= 7;
     fprintf(stderr, "begin t2: %d\n", *i);
+    //printf("YIELDING THREAD 2\n");
     ta_yield();
     *i -= 7;
     fprintf(stderr, "end t2: %d\n", *i);
@@ -31,7 +34,8 @@ int main(int argc, char **argv)
         ta_create(thread1, (void *)&i);
         ta_create(thread2, (void *)&i);
     }
-
+    //printf("THREADZ CREATED\n");
+    //printf("pass\n");
     int rv = ta_waitall();
     if (rv) {
         fprintf(stderr, "%d threads were not ready to run when ta_waitall() was called\n", -rv);
