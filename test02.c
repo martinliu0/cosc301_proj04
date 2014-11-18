@@ -103,15 +103,15 @@ int main(int argc, char **argv)
 
     int rv = ta_waitall();
     assert(rv == 0);
-    printf("i am here A");
+    //printf("i am here A");
     ta_sem_destroy(&readersem);
-    printf("i am here B");
+   // printf("i am here B");
     ta_sem_destroy(&writersem);
-    printf("i am here C");
+    //printf("i am here C");
     ta_lock_destroy(&rmutex);
-    printf("i am here D");
+   // printf("i am here D");
     ta_lock_destroy(&wmutex);
-    printf("i am here E");
+    //printf("i am here E");
 
     free(data);
 

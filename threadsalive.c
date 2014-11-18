@@ -65,21 +65,22 @@ void ta_yield(void) {
 int ta_waitall(void) {
     if (threadhead != NULL){
         while (1){
-            if (threadhead == NULL){
-                free(main1.uc_stack.ss_sp);
-                return 0;
-            }
+            
+            
             //Node *temp = threadhead;
             //assert(threadhead->ctx.uc_link != &main1);
-            printf("ATTEMPTING SWAP CONTEXT\n");
+           // printf("ATTEMPTING SWAP CONTEXT\n");
             swapcontext(&main1, &threadhead->ctx);
-            printf("THREAD COMPLETED\n");
+           // printf("THREAD COMPLETED\n");
             Node *temp = threadhead;
             threadhead = threadhead->next;
-	    if  (threadhead == NULL) {
-		}
+	   
             free(temp->ctx.uc_stack.ss_sp);
             free(temp);
+		if (threadhead == NULL){
+                free(main1.uc_stack.ss_sp);
+                return 0;}
+		
         }
     }  
         
@@ -125,7 +126,7 @@ void ta_sem_wait(tasem_t *sem) {
 	while(sem->count==0){
 		Node *temp = threadhead;
 		threadhead = threadhead->next;
-		insert(sem->queue, &temp); // add it to the waiting queue and do CS
+		insert(&temp, &sem->queue); // add it to the waiting queue and do CS
 		swapcontext(&temp->ctx, &threadhead->ctx);
 	}
 	//sem->count --;
@@ -134,7 +135,7 @@ void ta_sem_wait(tasem_t *sem) {
 
 void ta_lock_init(talock_t *mutex) {
 	mutex->semaphore = malloc(sizeof(tasem_t));
-	mutex->semaphore->count = 0;
+	mutex->semaphore->count = 1;
 	mutex->semaphore->queue = malloc(sizeof(Node));
 	return;
 	//ta_sem_init(mutex->semaphore, 0);
