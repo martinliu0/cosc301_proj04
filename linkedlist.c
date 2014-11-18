@@ -24,6 +24,7 @@ void delete(Node *head){
         free(temp);
     }
 }
+
 void insert(Node *newta, Node **head){
     if ((*head) == NULL) {
         *head = newta; 

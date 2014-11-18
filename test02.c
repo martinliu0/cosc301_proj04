@@ -48,6 +48,7 @@ void reader(void *arg)
         if (random() % 2 == 0)
             ta_yield();
     }
+
 }
 
 void writer(void *arg)
@@ -95,7 +96,7 @@ int main(int argc, char **argv)
     ta_create(killerthr, (void *)i);
 
     for (i = 0; i < nrw; i++) {
-	printf("I am making threads!");
+	
         ta_create(reader, (void *)i);
         ta_create(writer, (void *)i);
     }

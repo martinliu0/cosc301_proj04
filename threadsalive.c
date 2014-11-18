@@ -1,4 +1,7 @@
 /*
+Claire Grace and Martin Liu
+We both worked on writing and debugging all of the code together.
+
  * 
  */
 
@@ -18,7 +21,6 @@
 static ucontext_t main1;
 static Node *threadhead = NULL;
 //static Node *previous = NULL;
-static Node *curr_node;
 int any_waiting = 0;
 
 
@@ -27,6 +29,7 @@ void ta_libinit(void) {
     main1.uc_stack.ss_sp = stack;
     main1.uc_stack.ss_size = 128000;
     main1.uc_link = NULL;
+	
     return;
 }
 
@@ -41,29 +44,25 @@ void ta_create(void (*func)(void *), void *arg) {
     newta->ctx.uc_stack.ss_size = STACKSIZE;
     newta->ctx.uc_link = &main1;
     //previous = &newta->ctx;
-    makecontext(&(newta->ctx), (void (*)(void))func, 1, arg);
     insert(newta, &threadhead);
-
+    makecontext(&(newta->ctx), (void (*)(void))func, 1, arg);
+   
     return;
 }
 
 void ta_yield(void) {
-    ucontext_t current;
-    getcontext(&current);
     if (threadhead != NULL){
         Node *temp = threadhead;
-        insert(temp, &threadhead);    
-        threadhead = threadhead->next;
-        temp->next = NULL;
+	threadhead = threadhead->next;
+	temp->next = NULL;
+        insert(temp, &threadhead); 
+        //temp->next = NULL;
         swapcontext(&temp->ctx, &(threadhead->ctx));
     }
-
-    return;
+	return;
 }
     
 int ta_waitall(void) {
-    //ucontext_t curr;
-
     if (threadhead != NULL){
         while (1){
             if (threadhead == NULL){
@@ -75,11 +74,9 @@ int ta_waitall(void) {
             printf("ATTEMPTING SWAP CONTEXT\n");
             swapcontext(&main1, &threadhead->ctx);
             printf("THREAD COMPLETED\n");
-	    
             Node *temp = threadhead;
             threadhead = threadhead->next;
 	    if  (threadhead == NULL) {
-		printf("my threadhead is NULL!!!!!!!!!!!!!");
 		}
             free(temp->ctx.uc_stack.ss_sp);
             free(temp);
@@ -91,7 +88,8 @@ int ta_waitall(void) {
         return 0;
     }
     free(main1.uc_stack.ss_sp);
-    return -1;
+   return -1;
+    
 }
 
 
@@ -120,7 +118,6 @@ void ta_sem_post(tasem_t *sem) {
     }
     return;
 }
-
 
 
 void ta_sem_wait(tasem_t *sem) {
@@ -165,14 +162,23 @@ void ta_unlock(talock_t *mutex) {
    ***************************** */
 
 void ta_cond_init(tacond_t *cond) {
+	ta_sem_init(cond->semaphore, 0);
+	cond->state = 0;
 }
 
 void ta_cond_destroy(tacond_t *cond) {
+	ta_sem_destroy(cond->semaphore);
+
 }
 
 void ta_wait(talock_t *mutex, tacond_t *cond) {
+	ta_lock(mutex);	
+	ta_sem_wait(cond);
+	cond->state = 0;
+	ta_unlock(mutex);
 }
 
 void ta_signal(tacond_t *cond) {
+	ta_sem_post(cond);
 }
 
