@@ -38,6 +38,7 @@ void reader(void *arg)
     while (!stop) {
         ta_sem_wait(&readersem);
         ta_lock(&rmutex);
+        //printf("in reader\n");
         int loc = readerloc;
         readerloc = (readerloc+1) % datalen;
         ta_unlock(&rmutex);
@@ -60,6 +61,7 @@ void writer(void *arg)
         ta_sem_wait(&writersem);
 
         ta_lock(&wmutex);
+       // printf("in writer\n");
         int loc = writerloc;
         writerloc = (writerloc+1) % datalen;
         ta_unlock(&wmutex);
@@ -67,9 +69,10 @@ void writer(void *arg)
         data[loc] = val++;
         ta_sem_post(&readersem);
         fprintf(stderr, "writer %d wrote location %d\n", tid, loc);
-
+        //printf("check1\n");
         if (random() % 2 == 0)
             ta_yield();
+            //printf("check2\n");
     }
 }
 

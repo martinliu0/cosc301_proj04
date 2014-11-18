@@ -16,4 +16,5 @@ typedef struct node {
 /* your function declarations associated with the list */
 void insert(Node *, Node **);
 void delete(Node*);
+
 #endif // __LINKEDLIST_H__

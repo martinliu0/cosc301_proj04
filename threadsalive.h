@@ -21,8 +21,7 @@ typedef struct {
 } talock_t;
 
 typedef struct {
-	int state;
-	tasem_t *semaphore;
+  Node *queue;
 	//talock_t * lock;
 } tacond_t;
 

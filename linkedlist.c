@@ -5,16 +5,7 @@
 //#include "linkedlist.h"
 #include "threadsalive.h"
 
-void release_queue(tasem_t *sem){
-	// release any associated resources
-	Node *temp = sem->queue;
-	while (sem->queue!=NULL) {
-		temp = sem->queue;
-		sem->queue = sem->queue->next;
-		free(temp);
-	}
-	free(sem->queue);
-}
+
 
 void delete(Node *head){
     while(head != NULL){
@@ -36,10 +27,10 @@ void insert(Node *newta, Node **head){
         }
 
         curr->next = newta;
+        newta->next = NULL;
 
     }
 }
-
 
 
 
